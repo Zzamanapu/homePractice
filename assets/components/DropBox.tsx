@@ -5,7 +5,7 @@ import data from './MOC_DATA.json'
 function DropBox () {
 
     const [value, setValue] = useState('');
-
+    const [selectedItems, setSelectedItems] = useState<any[]>([]);
     const handleValue = (text: string) => {
         setValue(text);
         console.log("Input Value", text);
@@ -14,7 +14,17 @@ function DropBox () {
     const onSearch = (searchTerm: string) => {
         setValue(searchTerm);
         console.log('Search Term: ', searchTerm);
+
+        const selectedItem = data['full-name'].find(item => item.full_name === searchTerm);
+
+        const isDuplicate = selectedItems.some(item => item.full_name === searchTerm);
+        if(selectedItem && !isDuplicate) {
+            setSelectedItems(prevItems => [...prevItems, selectedItem]);
+        }
+
+        setValue('');
     };
+
     let jsonValue = data['full-name'];
 
     console.log("jsonValue:", jsonValue);
@@ -44,6 +54,15 @@ function DropBox () {
                     )) 
                 }
             </ScrollView>
+         </View>
+         <View style={styles.selectedItemContainer}>
+            {
+                selectedItems.map((item, index) => (
+                    <View key={index} style={styles.selectedItem}>
+                        <Text>{item.full_name}</Text>
+                    </View>
+                ))
+            }
          </View>
         </View>
     );
@@ -87,7 +106,17 @@ const styles = StyleSheet.create({
         padding: 10,
         borderBottomColor: '#ccc',
         borderBottomWidth: 1
+    },
+    selectedItemContainer: {
+        marginTop: 20,
+        width: '100%'
+    },
+    selectedItem: {
+        padding: 10,
+        borderBottomColor: '#ccc',
+        borderBottomWidth: 1
     }
+
 });
 
 
